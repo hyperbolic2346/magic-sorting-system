@@ -44,6 +44,23 @@ var all_item_ids = {};
 var all_group_ids = {};
 var all_item_frame_ids = {};
 
+function write_sort_file(filename, fallback_action, target) {
+	var name_selector = "";
+	if (config.named) {
+		name_selector = ',tag:{display:{Name:\'{"text":"' + config.named + '"}\'}}'
+	}
+
+	var entity_match_selector = '@e[type=minecraft:item_frame,nbt={Item:{id:"' + target + '"' + name_selector + '}},distance=0..' + config.max_teleport_distance + ']'
+	var entity_dest_selector = '@e[limit=1,sort=random,type=minecraft:item_frame,nbt={Item:{id:"' + target + '"' + name_selector + '}},distance=0..' + config.max_teleport_distance + ']'
+
+// create special sort mcfunction for group
+	fs.writeFileSync( filename,
+		'execute as @s if entity ' + entity_match_selector + ' run teleport @s ' + entity_dest_selector + "\n" +
+		'execute as @s unless entity ' + entity_match_selector + ' run ' + fallback_action + "\n"
+	);
+	console.log("Wrote file: " + Path.relative(__dirname, filename));
+}
+
 config.groups.forEach( function(group) {
 	var group_id = group.group_name.replace(/\W+/g, '');
 	var items = group.items;
@@ -63,25 +80,22 @@ config.groups.forEach( function(group) {
 	
 	if (items && items.length && target) {
 		var group_func_file = Path.join( func_dir, "sort_" + group_id + ".mcfunction" );
-		var fallback_action = group.fallback ? ('function mss:sort_' + group.fallback) : config.final_fallback;
-		
-		// create special sort mcfunction for group
-		fs.writeFileSync( group_func_file, 
-			'execute as @s if entity @e[type=minecraft:item_frame,nbt={Item:{id:"' + target + '"}},distance=0..' + config.max_teleport_distance + '] run teleport @s @e[limit=1,sort=random,type=minecraft:item_frame,nbt={Item:{id:"' + target + '"}},distance=0..' + config.max_teleport_distance + ']' + "\n" +
-			'execute as @s unless entity @e[type=minecraft:item_frame,nbt={Item:{id:"' + target + '"}},distance=0..' + config.max_teleport_distance + '] run ' + fallback_action + "\n"
-		);
-		console.log("Wrote file: " + Path.relative(__dirname, group_func_file));
+		var group_fallback = group.fallback ? ('function mss:sort_' + group.fallback) : config.final_fallback;
+		write_sort_file(group_func_file, group_fallback, target);
 		
 		// add group's items to main sort routine
 		items.forEach( function(item_id, idx) {
-			
+			var item_name = item_id.split(":")[1]
+			var item_func_file = Path.join( func_dir, "sort_item_" + item_name + ".mcfunction" );
+			write_sort_file(item_func_file, 'function mss:sort_' + group_id, item_id); 
+
 			if (item_id in all_item_ids) {
 				console.error("ERROR: Duplicate Item ID: " + item_id);
 			}
 			all_item_ids[item_id] = 1;
 			
 			sort_lines.push(
-				'execute as @s if entity @s[type=item,nbt={Item:{id:"' + item_id + '"}}] run function mss:sort_' + group_id
+				'execute as @s if entity @s[type=item,nbt={Item:{id:"' + item_id + '"}}] run function mss:sort_item' + item_id
 			);
 			total_items++;
 		} );
