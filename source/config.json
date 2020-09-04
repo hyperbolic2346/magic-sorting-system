@@ -1,7 +1,8 @@
 {
 	"max_teleport_distance": 128,
 	"final_fallback": "teleport @s @p",
-	"named": "sorter",
+	"item_name_in_frame": "sorter",
+	"group_name_in_frame": "group",
 	"effects": [
 		"playsound minecraft:entity.illusioner.mirror_move block @a[distance=..5] ~ ~ ~ 1.0 1.0",
 		"particle minecraft:entity_effect ~ ~ ~ 1 1 1 1 100"
