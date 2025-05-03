@@ -11,7 +11,7 @@ var Path = require('path');
 var config = require( Path.join( __dirname, 'config.json') );
 
 process.chdir( __dirname );
-var func_dir = Path.resolve( "../data/mss/functions" );
+var func_dir = Path.resolve( "../data/mss/function" );
 var sort_func_file = Path.join( func_dir, "sort.mcfunction" );
 var group_names = config.groups.map( function(group) { return group.group_name; } );
 
@@ -47,11 +47,11 @@ var all_item_frame_ids = {};
 function write_sort_file(filename, fallback_action, target, name) {
 	var name_selector = "";
 	if (name) {
-		name_selector = ',tag:{display:{Name:\'{"text":"' + name + '"}\'}}'
+		name_selector = ',components:{"minecraft:custom_name":\'{"text":"' + name + '"]\'}'
 	}
 
 	var entity_match_selector = '@e[type=minecraft:item_frame,nbt={Item:{id:"' + target + '"' + name_selector + '}},distance=0..' + config.max_teleport_distance + ']'
-	var entity_dest_selector = '@e[limit=1,sort=random,type=minecraft:item_frame,nbt={Item:{id:"' + target + '"' + name_selector + '}},distance=0..' + config.max_teleport_distance + ']'
+	var entity_dest_selector = '@e[limit=1,sort=random,type="minecraft:item_frame",nbt={Item:{id:"' + target + '"' + name_selector + '}},distance=0..' + config.max_teleport_distance + ']'
 
 	// create special sort mcfunction for group
 	fs.writeFileSync( filename,
