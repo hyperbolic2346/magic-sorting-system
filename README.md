@@ -36,6 +36,7 @@ Players can still build out custom storage systems using hoppers, chests, furnac
 - Automatically distributes items across multiple item frames in same group
 - Support for automatic smelting, and automatic food cooking
 - Create your own custom sort groups by modifying config file
+- Sort individual items by naming item frames in an anvil
 
 ## Upgrading from v1.0
 
@@ -178,13 +179,28 @@ For a more advanced auto-controller, see the [Advanced](#advanced) section below
 
 ## Creating an Item Receiver
 
-An "item receiver" is just an [item frame](https://minecraft.gamepedia.com/Item_Frame) that contains a special item which represents one of the [39 groups](#groups).  Then, all items to be sorted within that group will teleport to the item frame.  What happens then?  Well, it's actually entirely up to you!  But the most common thing is to simply place a [hopper](https://minecraft.gamepedia.com/Hopper) underneath the item frame, and route that to a nearby chest.  Example:
+An "item receiver" is just an [item frame](https://minecraft.gamepedia.com/Item_Frame) that contains a special item which represents one of the [39 groups](#groups) or a specific item. The items in the frames need to be named in an anvil to indicate their sorting behavior:
+
+- Name an item `group` to sort all items in that category (e.g., all stone items)
+- Name an item `sorter` to sort only that specific item
+
+For example, to create a stone group sorter:
+1. Place an item frame
+2. Name a cobblestone block `group` in an anvil
+3. Put the named cobblestone block in the frame
+
+To create a specific item sorter:
+1. Place an item frame
+3. Name the item you want to sort `sorter` in an anvil
+4. Place the named item in the frame
+
+Then, all items to be sorted within that group or matching that specific item will teleport to the item frame. What happens then? Well, it's actually entirely up to you! But the most common thing is to simply place a [hopper](https://minecraft.gamepedia.com/Hopper) underneath the item frame, and route that to a nearby chest. Example:
 
 ![Single Chest Receiver](https://pixlcore.com/software/mss/screenshots/single-chest.png)
 
-In this example, the item frame contains a [block of cobblestone](https://minecraft.gamepedia.com/Cobblestone), which is the item representing the [Stone](#stone) group, so all stone items will be routed here.  They'll teleport to the item frame, drop into hopper and be delivered to the chest.
+In this example, the item frame contains a [block of cobblestone](https://minecraft.gamepedia.com/Cobblestone) named `group`, which represents the [Stone](#stone) group, so all stone items will be routed here. They'll teleport to the item frame, drop into hopper and be delivered to the chest.
 
-**Tip:** Make sure you shift-click on the chest when placing the hopper, so it directs the output accordingly.  By default hoppers drop straight down.
+**Tip:** Make sure you shift-click on the chest when placing the hopper, so it directs the output accordingly. By default hoppers drop straight down.
 
 ### Multiple Chests
 
@@ -196,11 +212,11 @@ There are, of course, a million different ways to solve this problem -- this is 
 
 ### Multiple Item Frames
 
-For high traffic groups such as [Stone](#stone), where a player might drop off a large number of item stacks at once, it is recommended that you use multiple item frames.  This is because a single hopper can only handle up to 5 stacks of items at one time.  If you drop off more all at once, your hopper might overflow and dump some items onto the floor before it can route them.  To handle this situation better, consider the following setup:
+For high traffic groups such as [Stone](#stone), where a player might drop off a large number of item stacks at once, it is recommended that you use multiple item frames. This is because a single hopper can only handle up to 5 stacks of items at one time. If you drop off more all at once, your hopper might overflow and dump some items onto the floor before it can route them. To handle this situation better, consider the following setup:
 
 ![Double Chest and Item Frame](https://pixlcore.com/software/mss/screenshots/double-chest-double-item-frame.png)
 
-Here we have two item frames with identical items inside them, pointing to hoppers that route to the same chest.  This works because the magic sorting system will pick *random item frame targets* for teleporting each item, if they both display the correct group target item, effectively balancing the drop-off load between the matching frames.  So in this case the group could handle up to 10 stacks of items dropped off at once before it overflows.
+Here we have two item frames with identical items inside them (both named `group`), pointing to hoppers that route to the same chest. This works because the magic sorting system will pick *random item frame targets* for teleporting each item, if they both display the correct group target item, effectively balancing the drop-off load between the matching frames. So in this case the group could handle up to 10 stacks of items dropped off at once before it overflows.
 
 There are other ways to handle item drop-off overflow, including building walls all around your item frames, so the items get "trapped" after teleporting, and just sit and wait until the hopper can service them.  However, this means your item frame would have to be hidden in a wall, or in the ceiling, and thus you lose the dual-purpose nature of having the item frame be both a visual label, and a teleportation target.
 
@@ -208,7 +224,7 @@ Also see the [Advanced](#advanced) section for another way to solve item overflo
 
 ### Automatic Smelting or Cooking
 
-You can route your items into things other than chests -- you can also setup an easy auto-smelting system, for [ores](#ores) and/or [raw food](#raw).  Simply add an additional hopper under the item chest, and route it to a furnace on its top side:
+You can route your items into things other than chests -- you can also setup an easy auto-smelting system, for [ores](#ores) and/or [raw food](#raw). Simply add an additional hopper under the item chest, and route it to a furnace on its top side:
 
 ![Ore Chest and Furnace](https://pixlcore.com/software/mss/screenshots/single-ore-single-furnace.png)
 
@@ -1949,6 +1965,21 @@ The Misc group is a special universal catch-all group, and collects all otherwis
 
 </p>
 </details>
+
+## Item Frame Naming
+
+Item frames can be named in an anvil to enable individual item sorting. There are two types of names you can use:
+
+- `group`: This indicates the frame should sort items based on their group category (e.g., all stone items)
+- `sorter`: This indicates the frame should sort a specific individual item
+
+For example, if you want to sort cobblestone separately from other stone items, you can:
+1. Place an item frame
+2. Put a cobblestone block in the frame
+3. Name the frame `sorter` in an anvil
+4. Place the named frame in your sorting system
+
+This allows for both broad category sorting (using `group` named frames) and specific item sorting (using `sorter` named frames) in the same system.
 
 # FAQ
 

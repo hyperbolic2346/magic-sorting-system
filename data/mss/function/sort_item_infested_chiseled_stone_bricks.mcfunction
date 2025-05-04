@@ -1,0 +1,2 @@
+execute as @s if entity @e[type=minecraft:item_frame,nbt={Item:{id:"minecraft:infested_chiseled_stone_bricks",components:{"minecraft:custom_name":'"sorter"'}}},distance=..128] run teleport @s @e[limit=1,sort=nearest,type=minecraft:item_frame,nbt={Item:{id:"minecraft:infested_chiseled_stone_bricks",components:{"minecraft:custom_name":'"sorter"'}}},distance=..128]
+execute as @s unless entity @e[type=minecraft:item_frame,nbt={Item:{id:"minecraft:infested_chiseled_stone_bricks",components:{"minecraft:custom_name":'"sorter"'}}},distance=..128] run function mss:sort_mobs
